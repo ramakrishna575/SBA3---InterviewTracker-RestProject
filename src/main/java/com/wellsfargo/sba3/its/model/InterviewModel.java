@@ -2,7 +2,7 @@ package com.wellsfargo.sba3.its.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -39,13 +39,13 @@ public class InterviewModel {
 	private String remarks;
 	
 	@Valid
-	private List<UserModel> attendee;	
+	private Set<UserModel> attendee;	
 	
-	public List<UserModel> getAttendee() {
+	public Set<UserModel> getAttendee() {
 		return attendee;
 	}
 	
-	public void setAttendee(List<UserModel> attendees) {
+	public void setAttendee(Set<UserModel> attendees) {
 		this.attendee = attendees;
 	}
 
@@ -82,7 +82,7 @@ public class InterviewModel {
 			LocalTime time, LocalDate date,
 			String interviewStatus,
 			String remarks,
-			List<UserModel> attendees) {
+			Set<UserModel> attendees) {
 		super();
 		this.interviewId = interviewId;
 		this.interviewerName = interviewerName;

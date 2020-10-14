@@ -1,6 +1,7 @@
 package com.wellsfargo.sba3.its.service;
 
-import java.util.List;
+import java.util.Set;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -40,9 +41,9 @@ public class InterviewServiceImpl implements InterviewService {
 			return new InterviewModel(entity.getInterviewId(), entity.getInterviewerName(), entity.getInterviewName(), entity.getUsersSkills(), entity.getTime(), entity.getDate(), entity.getInterviewStatus(), entity.getRemarks(), toUserModels(entity.getAttendees()));
 	}
 	
-	private List<UserEntity> toUserEntities(List<UserModel> userModels) {
-		List<UserEntity> entities=null;
-		entities = userModels.stream().map(e -> toUserEntity(e)).collect(Collectors.toList());
+	private Set<UserEntity> toUserEntities(Set<UserModel> userModels) {
+		Set<UserEntity> entities=null;
+		entities = userModels.stream().map(e -> toUserEntity(e)).collect(Collectors.toSet());
 		return entities;
 	}
 	
@@ -50,9 +51,9 @@ public class InterviewServiceImpl implements InterviewService {
 		return new UserEntity(model.getUserId(), model.getFirstName(), model.getLastName(),model.getEmail(), model.getMobile());
 	}
 	
-	private List<UserModel> toUserModels(List<UserEntity> userEntities) {
-		List<UserModel> models=null;
-		models = userEntities.stream().map(e -> toUserModel(e)).collect(Collectors.toList());
+	private Set<UserModel> toUserModels(Set<UserEntity> userEntities) {
+		Set<UserModel> models=null;
+		models = userEntities.stream().map(e -> toUserModel(e)).collect(Collectors.toSet());
 		return models;
 	}
 	
@@ -88,7 +89,7 @@ public class InterviewServiceImpl implements InterviewService {
 	        		throw new InterviewTrackerException("User Id already exists on Interview!");
 	        	}
 	        }
-	        List<UserModel> users=interview.getAttendee();	        
+	        Set<UserModel> users=interview.getAttendee();	        
 	        users.add(getUserById(attendee.getUserId()));
 	        interview.setAttendee(users);
 	        intwRepo.save(toInterviewEntity(interview));
@@ -124,29 +125,29 @@ public class InterviewServiceImpl implements InterviewService {
 	}
 
 	@Override
-	public List<InterviewModel> getinterview(String interviewName, String interviewerName) {
-		List<InterviewEntity> entities= intwRepo.findByNameAndInterviewer(interviewName, interviewerName);
-		List<InterviewModel> models=null;
+	public Set<InterviewModel> getinterview(String interviewName, String interviewerName) {
+		Set<InterviewEntity> entities= (Set<InterviewEntity>) intwRepo.findByNameAndInterviewer(interviewName, interviewerName);
+		Set<InterviewModel> models=null;
 		if(entities!=null && !entities.isEmpty()) {
-			models = entities.stream().map(e -> getInterviewModel(e)).collect(Collectors.toList());
+			models = entities.stream().map(e -> getInterviewModel(e)).collect(Collectors.toSet());
 		}
 		return models;
 	}
 
 	@Override
 	public String getInterviewCount() {
-		List<InterviewEntity> entities= intwRepo.findAll();
+		Set<InterviewEntity> entities= (Set<InterviewEntity>) intwRepo.findAll();
 		if(entities!=null)
 			return "Total no. of Interviews: " + entities.size();
 		return "No interviews are present";
 	}
 
 	@Override
-	public List<InterviewModel> getAllInterviewDetails() {
-		List<InterviewEntity> entities= intwRepo.findAll();
-		List<InterviewModel> models=null;
+	public Set<InterviewModel> getAllInterviewDetails() {
+		Set<InterviewEntity> entities= (Set<InterviewEntity>) intwRepo.findAll();
+		Set<InterviewModel> models=null;
 		if(entities!=null && !entities.isEmpty()) {
-			models = entities.stream().map(e -> getInterviewModel(e)).collect(Collectors.toList());
+			models = entities.stream().map(e -> getInterviewModel(e)).collect(Collectors.toSet());
 		}
 		return models;
 	}
@@ -155,7 +156,7 @@ public class InterviewServiceImpl implements InterviewService {
 		return new InterviewModel(entity.getInterviewId(), entity.getInterviewerName(), entity.getInterviewName(), entity.getUsersSkills(), entity.getTime(), entity.getDate(), entity.getInterviewStatus(), entity.getRemarks());
 	}
 	@Override
-	public List<UserModel> showUsers(int interviewId) throws InterviewTrackerException {
+	public Set<UserModel> showUsers(int interviewId) throws InterviewTrackerException {
 		if(!intwRepo.existsById(interviewId)) {
             throw new InterviewTrackerException("Interview Id Not Found!");
         }

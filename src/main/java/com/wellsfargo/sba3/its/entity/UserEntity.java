@@ -1,7 +1,9 @@
 package com.wellsfargo.sba3.its.entity;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -32,8 +34,8 @@ public class UserEntity implements Serializable,Comparable<UserEntity> {
 	@Column(name="mobile")
 	private String mobile;
 	
-	@ManyToMany(mappedBy = "attendees", fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<InterviewEntity> interviews;
+	@ManyToMany(mappedBy = "attendees", fetch=FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+	private Set<InterviewEntity> interviews = new HashSet<>();
 	
 	public UserEntity() {
 		//left unimplemented
@@ -47,7 +49,7 @@ public class UserEntity implements Serializable,Comparable<UserEntity> {
 		this.email = email;
 		this.mobile = mobile;
 	}
-	public UserEntity(Integer userId, String firstName, String lastName, String email, String mobile, List<InterviewEntity> interviews) {
+	public UserEntity(Integer userId, String firstName, String lastName, String email, String mobile, Set<InterviewEntity> interviews) {
 		super();
 		this.userId = userId;
 		this.firstName = firstName;
@@ -108,16 +110,26 @@ public class UserEntity implements Serializable,Comparable<UserEntity> {
 	}
 
 	
-	public List<InterviewEntity> getInterviews() {
+	public Set<InterviewEntity> getInterviews() {
 		return interviews;
 	}
 
 
-	public void setInterviews(List<InterviewEntity> interviews) {
+	public void setInterviews(Set<InterviewEntity> interviews) {
 		this.interviews = interviews;
 	}
 
-
+    public void removeInterview(InterviewEntity interview) {
+        this.interviews.remove(interview);
+        interview.getAttendees().remove(this);
+    }
+ 
+    public void removeInterviews() {
+        for(InterviewEntity interview : new HashSet<>(this.interviews)) {
+        	removeInterview(interview);
+        }
+    }
+	
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName

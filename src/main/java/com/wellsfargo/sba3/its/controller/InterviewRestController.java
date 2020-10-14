@@ -1,6 +1,7 @@
 package com.wellsfargo.sba3.its.controller;
 
-import java.util.List;
+import java.util.Set;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -31,8 +32,8 @@ public class InterviewRestController {
 	private InterviewService interviewService;
 	
 	@GetMapping("/showInterviews")
-	public ResponseEntity<List<InterviewModel>> getAllInterviews(){
-		return new ResponseEntity<List<InterviewModel>>(interviewService.getAllInterviewDetails(),HttpStatus.OK);
+	public ResponseEntity<Set<InterviewModel>> getAllInterviews(){
+		return new ResponseEntity<Set<InterviewModel>>(interviewService.getAllInterviewDetails(),HttpStatus.OK);
 	}
 	
 	@GetMapping("/count")
@@ -41,14 +42,14 @@ public class InterviewRestController {
 	}
 
 	@GetMapping("/showAttendee/{id}")
-	public ResponseEntity<List<UserModel>> showAttendees(@PathVariable("id")int interviewId) throws InterviewTrackerException{
+	public ResponseEntity<Set<UserModel>> showAttendees(@PathVariable("id")int interviewId) throws InterviewTrackerException{
 		return new ResponseEntity<>(interviewService.showUsers(interviewId),HttpStatus.OK);
 	}
 	
 	@GetMapping("/showInterviews/{InterviewName}/{InterviewerName}")
-	public ResponseEntity<List<InterviewModel>> getInterviews(@PathVariable("InterviewName")String interviewName, @PathVariable("InterviewerName")String interviewerName){
-		ResponseEntity<List<InterviewModel>> resp=null;
-		List<InterviewModel> interview = interviewService.getinterview(interviewName, interviewerName);
+	public ResponseEntity<Set<InterviewModel>> getInterviews(@PathVariable("InterviewName")String interviewName, @PathVariable("InterviewerName")String interviewerName){
+		ResponseEntity<Set<InterviewModel>> resp=null;
+		Set<InterviewModel> interview = interviewService.getinterview(interviewName, interviewerName);
 		
 		if(interview!=null) {
 			resp =new ResponseEntity<>(interview,HttpStatus.OK);

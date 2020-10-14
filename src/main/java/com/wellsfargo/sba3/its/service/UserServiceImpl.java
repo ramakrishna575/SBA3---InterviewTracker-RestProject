@@ -8,7 +8,9 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wellsfargo.sba3.its.dao.InterviewDAO;
 import com.wellsfargo.sba3.its.dao.UserDAO;
+import com.wellsfargo.sba3.its.entity.InterviewEntity;
 import com.wellsfargo.sba3.its.entity.UserEntity;
 import com.wellsfargo.sba3.its.exception.InterviewTrackerException;
 import com.wellsfargo.sba3.its.model.UserModel;
@@ -19,6 +21,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDAO userRepo;
 
+	@Autowired
+	private InterviewDAO intwRepo;
+	
 	private UserEntity toEntity(UserModel model) {
 		return new UserEntity(model.getUserId(), model.getFirstName(), model.getLastName(),model.getEmail(), model.getMobile());
 	}
@@ -47,8 +52,13 @@ public class UserServiceImpl implements UserService {
 		if(!userRepo.existsById(userId)) {
 			throw new InterviewTrackerException("User Not Found");
 		}
-		
-		userRepo.deleteById(userId);
+		UserEntity userEntity = userRepo.findById(userId).orElse(null);
+		//userEntity.getInterviews().removeAll(userEntity.getInterviews());
+
+		//userRepo.save(userEntity);
+		userEntity.removeInterviews();
+		userRepo.flush();
+		userRepo.delete(userEntity);
 		return true;
 	}
 

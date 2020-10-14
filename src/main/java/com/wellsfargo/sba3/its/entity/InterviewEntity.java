@@ -3,7 +3,8 @@ package com.wellsfargo.sba3.its.entity;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -47,18 +48,18 @@ public class InterviewEntity implements Serializable,Comparable<InterviewEntity>
 	private String remarks;
 	
 	
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @JoinTable(name = "InterviewSchedule", 
       joinColumns = @JoinColumn(name = "interviewId", referencedColumnName = "iId"), 
       inverseJoinColumns = @JoinColumn(name = "userId", referencedColumnName = "uId"))
-	private List<UserEntity> attendees;
+	private Set<UserEntity> attendees=new HashSet<>();
 	
 	public InterviewEntity() {
 		//left unimplemented
 	}
 
 	public InterviewEntity(Integer interviewId, String interviewerName, String interviewName, String usersSkills,
-			LocalTime time, LocalDate date, String interviewStatus, String remarks, List<UserEntity> attendees) {
+			LocalTime time, LocalDate date, String interviewStatus, String remarks, Set<UserEntity> attendees) {
 		super();
 		this.interviewId = interviewId;
 		this.interviewerName = interviewerName;
@@ -149,11 +150,11 @@ public class InterviewEntity implements Serializable,Comparable<InterviewEntity>
 	}
 
 
-	public List<UserEntity> getAttendees() {
+	public Set<UserEntity> getAttendees() {
 		return attendees;
 	}
 
-	public void setAttendees(List<UserEntity> attendees) {
+	public void setAttendees(Set<UserEntity> attendees) {
 		this.attendees = attendees;
 	}
 
