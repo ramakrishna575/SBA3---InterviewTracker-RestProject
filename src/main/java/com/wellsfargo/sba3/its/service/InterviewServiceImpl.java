@@ -1,5 +1,7 @@
 package com.wellsfargo.sba3.its.service;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -126,7 +128,7 @@ public class InterviewServiceImpl implements InterviewService {
 
 	@Override
 	public Set<InterviewModel> getinterview(String interviewName, String interviewerName) {
-		Set<InterviewEntity> entities= (Set<InterviewEntity>) intwRepo.findByNameAndInterviewer(interviewName, interviewerName);
+		Set<InterviewEntity> entities= new HashSet<InterviewEntity>(intwRepo.findByNameAndInterviewer(interviewName, interviewerName));
 		Set<InterviewModel> models=null;
 		if(entities!=null && !entities.isEmpty()) {
 			models = entities.stream().map(e -> getInterviewModel(e)).collect(Collectors.toSet());
@@ -136,15 +138,16 @@ public class InterviewServiceImpl implements InterviewService {
 
 	@Override
 	public String getInterviewCount() {
-		Set<InterviewEntity> entities= (Set<InterviewEntity>) intwRepo.findAll();
+		Set<InterviewEntity> entities=  new HashSet<InterviewEntity>(intwRepo.findAll());
 		if(entities!=null)
 			return "Total no. of Interviews: " + entities.size();
-		return "No interviews are present";
+		else
+			return "No interviews are present";
 	}
 
 	@Override
 	public Set<InterviewModel> getAllInterviewDetails() {
-		Set<InterviewEntity> entities= (Set<InterviewEntity>) intwRepo.findAll();
+		Set<InterviewEntity> entities= new HashSet<InterviewEntity>(intwRepo.findAll());
 		Set<InterviewModel> models=null;
 		if(entities!=null && !entities.isEmpty()) {
 			models = entities.stream().map(e -> getInterviewModel(e)).collect(Collectors.toSet());
